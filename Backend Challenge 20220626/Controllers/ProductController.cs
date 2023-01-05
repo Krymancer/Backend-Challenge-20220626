@@ -18,7 +18,7 @@ namespace Backend_Challenge_20220626.Controllers
         [Route("{code}")]
         public async Task<IActionResult> GetByCode(string code)
         {
-            var product = await _productService.GetAsync(code);
+            var product = await _productService.GetByCodeAsync(code);
 
             if (product is null) return new NotFoundObjectResult("Product with this code not founded!");
 

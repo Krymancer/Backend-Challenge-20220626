@@ -22,7 +22,7 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(opts => opts
         .ForJob(jobKey)
         .WithIdentity("ScrappingJob-trigger")
-        //.WithCronSchedule("0 0 9 ? * * *")
+        .WithCronSchedule(builder.Configuration.GetSection("JobsConfiguration:CronTime").Value!)
         .StartNow()
     );
 });

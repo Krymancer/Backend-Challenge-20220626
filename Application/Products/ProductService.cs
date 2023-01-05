@@ -25,6 +25,9 @@ namespace Application.Products
         public async Task<IEnumerable<Product>> GetAsync() =>
             await _productCollection.Find(_ => true).ToListAsync();
 
+        public async Task<Product?> GetByCodeAsync(string code) =>
+            await _productCollection.Find(p => p.Code == code).FirstOrDefaultAsync();
+
         public async Task<Product?> GetAsync(string id) =>
             await _productCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
@@ -40,6 +43,14 @@ namespace Application.Products
         public async Task<IEnumerable<Product>> GetPaged(int page, int pageSize)
         {
             return await _productCollection.Find(_ => true).Skip(page * pageSize).Limit(pageSize).ToListAsync();
+        }
+
+        public async Task CreateRangeAsync(IEnumerable<Product> products)
+        {
+            foreach (var product in products)
+            {
+                await CreateAsync(product);
+            }
         }
     }
 }
