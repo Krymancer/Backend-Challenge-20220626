@@ -2,6 +2,10 @@
 
 namespace Backend_Challenge_20220626.Controllers
 {
+
+    /// <summary>
+    /// Main Controller
+    /// </summary>
     [ApiController]
     [Route("")]
     public class MainController

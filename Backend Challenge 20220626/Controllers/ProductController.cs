@@ -5,12 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Backend_Challenge_20220626.Controllers
 {
+    /// <summary>
+    /// Product Controller
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class ProductsController
     {
         private readonly IProductService _productService;
 
+        /// <summary>
+        /// Controller Constructor
+        /// </summary>
         public ProductsController(IProductService productService)
         {
             _productService = productService;
