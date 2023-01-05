@@ -1,4 +1,6 @@
-﻿using Application.Products;
+﻿using System.Net;
+using Application.Products;
+using Domain.Products;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend_Challenge_20220626.Controllers
@@ -14,6 +16,15 @@ namespace Backend_Challenge_20220626.Controllers
             _productService = productService;
         }
 
+        /// <summary>
+        /// Retrieve a product from database
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns>Product referring to the code provided</returns>
+        /// <response code="200">Product referring to the code provided</response>
+        /// <response code="404">Unable to find product with provided code</response>
+        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
         [HttpGet]
         [Route("{code}")]
         public async Task<IActionResult> GetByCode(string code)
@@ -25,8 +36,22 @@ namespace Backend_Challenge_20220626.Controllers
             return new OkObjectResult(product);
         }
 
+        /// <summary>
+        /// List products in database
+        /// </summary>
+        /// <param name="page">Current page</param>
+        /// <param name="pageSize">Number of results per page</param>
+        /// <returns>A list of products</returns>
+        /// <response code="200">List the products accordingly with the page and page size parameters</response>
+        /// <response code="400">If the current page is negative</response>
+        [ProducesResponseType(typeof(List<Product>),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> GetAll(int page, int pageSize) => new OkObjectResult(await _productService.GetPaged(page,pageSize));
+        public async Task<IActionResult> GetAll(int page, int pageSize) {
+            if (page < 0) return new BadRequestObjectResult("Page must be a positive integer");
+        
+            return new OkObjectResult(await _productService.GetPaged(page, pageSize));
+        }
     }
 }
