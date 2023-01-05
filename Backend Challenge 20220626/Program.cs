@@ -1,5 +1,7 @@
 using Data;
 using IoC;
+using Jobs;
+using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -9,6 +11,23 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<OpenFoodFactsDataBaseSettings>(builder.Configuration.GetSection("OpenFoodFactsDatabaseSettings"));
 
 builder.Services.AddLocalServices(builder.Configuration);
+
+builder.Services.AddQuartz(q =>
+{
+    q.UseMicrosoftDependencyInjectionJobFactory();
+
+    var jobKey = new JobKey("ScrappingJob");
+    q.AddJob<ScrappingJob>(options => options.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("ScrappingJob-trigger")
+        //.WithCronSchedule("0 0 9 ? * * *")
+        .StartNow()
+    );
+});
+
+builder.Services.AddQuartzServer(options => options.WaitForJobsToComplete = true);
 
 var app = builder.Build();
 
